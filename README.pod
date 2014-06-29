@@ -104,18 +104,18 @@ return value from the callback will be returned.
         int ret = 0;
         mini_t *mini = mini_ini(filename);
         while(mini_next(mini)) {
-            if(mini->lineno == 0) {
-                fprintf(stderr, "error reading '%s' (%s)\n",
-                        filename, strerror(errno));
-                ret = 1;
-                break;
-            } else if(!mini->key) {
+            if(!mini->key) {
                 printf("[%s]\n", mini->section);
             } else if(!mini->value) {
                 printf("%s\n", mini->key);
             } else {
                 printf("%s = %s\n", mini->key, mini->value);
             }
+        }
+        if(!mini->eof) {
+            fprintf(stderr, "error reading '%s' (%s)\n",
+                    filename, strerror(errno));
+            ret = 1;
         }
         mini_free(mini);
         return 0;
