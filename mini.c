@@ -118,6 +118,7 @@ mini_t *mini_lookup_key(mini_t *mini, const char *section, const char *key) {
 
     rewind(mini->stream);
     mini->lineno = 0;
+    mini->eof = 0;
 
     if(!key) {
         return NULL;
