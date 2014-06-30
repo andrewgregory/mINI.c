@@ -8,23 +8,17 @@
 
 int main(int argc, char **argv)
 {
-    char temp_path[] = "mini_test_XXXXXX";
-    int fd1 = mkstemp(temp_path);
-    FILE *stream = fdopen(fd1, "r+");
-
-    fputs(
-            "\n"
-            " key outside section\n"
-            " [ section with spaces ] \n"
-            " [key \n"
-            " key = value \n"
-            " key with spaces \n"
-            "key=value\n"
-            "key#this is a comment\n",
-            stream);
-    fclose(stream);
-
-    mini_t *ini = mini_init(temp_path);
+    char buf[] =
+        "\n"
+        " key outside section\n"
+        " [ section with spaces ] \n"
+        " [key \n"
+        " key = value \n"
+        " key with spaces \n"
+        "key=value\n"
+        "key#this is a comment\n";
+    FILE *stream = fmemopen(buf, sizeof(buf), "r");
+    mini_t *ini = mini_finit(stream);
 
     tap_plan(46);
 
@@ -84,7 +78,6 @@ int main(int argc, char **argv)
     tap_ok(ini->eof, NULL);
 
     mini_free(ini);
-    unlink(temp_path);
 
     return 0;
 }
