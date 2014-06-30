@@ -61,9 +61,7 @@ void mini_free(mini_t *mini) {
 static size_t _mini_strtrim(char *str) {
     char *start = str, *end;
 
-    if(!(str && *str)) {
-        return 0;
-    }
+    if(!(str && *str)) { return 0; }
 
     for(; *start && isspace((int) *start); start++);
     end = start + strlen(start) - 1;
@@ -120,9 +118,7 @@ mini_t *mini_lookup_key(mini_t *mini, const char *section, const char *key) {
     mini->lineno = 0;
     mini->eof = 0;
 
-    if(!key) {
-        return NULL;
-    }
+    if(!key) { return NULL; }
 
     while(mini_next(mini)) {
         if(mini->lineno == 0) {
