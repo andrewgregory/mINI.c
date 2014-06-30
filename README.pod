@@ -19,8 +19,7 @@ a literal C<#> in an entry.
 
 =item Sections
 
-Sections are wrapped in brackets (C<[]>).  Leading and trailing whitespace is
-removed.  For example, C< [ foo bar ] > is parsed as C<foo bar>.
+Sections are wrapped in brackets (C<[]>).
 
 =item Keys
 
