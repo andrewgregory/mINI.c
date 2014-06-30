@@ -16,11 +16,13 @@ int main(int argc, char **argv)
         " key = value \n"
         " key with spaces \n"
         "key=value\n"
-        "key#this is a comment\n";
+        "key#this is a comment\n"
+        " [] # empty section name\n"
+        "emptysection\n";
     FILE *stream = fmemopen(buf, sizeof(buf), "r");
     mini_t *ini = mini_finit(stream);
 
-    tap_plan(46);
+    tap_plan(58);
 
     tap_ok(ini != NULL, "mini_init");
 
@@ -70,6 +72,20 @@ int main(int argc, char **argv)
     tap_is_int(ini->lineno, 8, NULL);
     tap_is_str(ini->section, " section with spaces ", NULL);
     tap_is_str(ini->key, "key", NULL);
+    tap_is_str(ini->value, NULL, NULL);
+    tap_is_int(ini->eof, 0, NULL);
+
+    tap_ok(mini_next(ini) != NULL, NULL);
+    tap_is_int(ini->lineno, 9, NULL);
+    tap_is_str(ini->section, "", NULL);
+    tap_is_str(ini->key, NULL, NULL);
+    tap_is_str(ini->value, NULL, NULL);
+    tap_is_int(ini->eof, 0, NULL);
+
+    tap_ok(mini_next(ini) != NULL, NULL);
+    tap_is_int(ini->lineno, 10, NULL);
+    tap_is_str(ini->section, "", NULL);
+    tap_is_str(ini->key, "emptysection", NULL);
     tap_is_str(ini->value, NULL, NULL);
     tap_is_int(ini->eof, 0, NULL);
 
