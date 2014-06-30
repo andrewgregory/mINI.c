@@ -27,6 +27,10 @@
 
 #include <stdio.h>
 
+#if !defined(MINI_BUFFER_SIZE) || (MINI_BUFFER_SIZE < 2)
+#define MINI_BUFFER_SIZE 512
+#endif
+
 typedef struct {
     FILE *stream;
     unsigned int lineno;

@@ -39,7 +39,7 @@ mini_t *mini_finit(FILE *stream) {
 
     mini->stream = stream;
 
-    mini->_buf_size = 512;
+    mini->_buf_size = MINI_BUFFER_SIZE;
     mini->_buf = malloc(mini->_buf_size);
     if(!mini->_buf) { mini_free(mini); return NULL; }
 
