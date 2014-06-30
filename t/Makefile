@@ -8,7 +8,7 @@ OBJECTS = 10-basic.t
 all: $(OBJECTS)
 
 check: all
-	PATH=.:$$PATH LD_LIBRARY_PATH=../lib prove $(OBJECTS)
+	PATH=.:$$PATH prove $(OBJECTS)
 
 clean:
 	$(RM) $(OBJECTS)
