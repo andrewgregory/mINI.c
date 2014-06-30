@@ -29,6 +29,7 @@
 #include <ctype.h> /* isspace */
 #include <stdlib.h>
 #include <stdio.h>
+#include <errno.h>
 
 #include "mini.h"
 
@@ -74,15 +75,42 @@ static size_t _mini_strtrim(char *str) {
 }
 
 mini_t *mini_next(mini_t *mini) {
-    char *c = NULL;
-    size_t buflen = 0;
+    char *c = mini->_buf;
+    size_t buflen = mini->_buf_size;
 
     mini->key = NULL;
     mini->value = NULL;
 
-    if(fgets(mini->_buf, mini->_buf_size, mini->stream) == NULL) {
-        mini->eof = feof(mini->stream);
-        return NULL;
+    while(1) {
+        c = fgets(c, buflen, mini->stream);
+        if(c && (strchr(c, '\n') || feof(mini->stream))) {
+            break;
+        } else if(c == NULL) {
+            mini->eof = feof(mini->stream);
+            return NULL;
+        } else if(strchr(c, '#')) {
+            /* remainder of the line is a comment, just drop it */
+            int i = fgetc(mini->stream);
+            while(i != '\n' && i != EOF) { i = fgetc(mini->stream); }
+            break;
+        } else {
+            char *old_buf = mini->_buf;
+            size_t old_size = mini->_buf_size;
+            mini->_buf_size += MINI_BUFFER_SIZE;
+            if(mini->_buf_size <= old_size) {
+                mini->_buf_size = old_size;
+                errno = EOVERFLOW;
+                return NULL;
+            }
+            mini->_buf = realloc(mini->_buf, mini->_buf_size);
+            if(mini->_buf == NULL) {
+                mini->_buf_size = old_size;
+                mini->_buf = old_buf;
+                return NULL;
+            }
+            c = old_buf + old_size - 1;
+            buflen = mini->_buf_size - old_size + 1;
+        }
     }
 
     mini->lineno++;
