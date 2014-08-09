@@ -121,6 +121,11 @@ mini_t *mini_next(mini_t *mini) {
     mini->lineno++;
 
     buflen = strlen(mini->_buf);
+    if(mini->_buf[buflen - 1] != '\n' && !feof(mini->stream)) {
+        errno = EOVERFLOW;
+        return NULL;
+    }
+
     if((c = strchr(mini->_buf, '#'))) {
         *c = '\0';
         buflen = c - mini->_buf;
