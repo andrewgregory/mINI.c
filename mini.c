@@ -25,11 +25,10 @@
 #ifndef MINI_C
 #define MINI_C
 
-#include <string.h>
-#include <ctype.h> /* isspace */
-#include <stdlib.h>
-#include <stdio.h>
 #include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "mini.h"
 
@@ -59,13 +58,17 @@ void mini_free(mini_t *mini) {
     free(mini);
 }
 
+static inline int _mini_isspace(int c) {
+    return strchr(" \t\f\r\n\v", c) ? 1 : 0;
+}
+
 static size_t _mini_strtrim(char *str, size_t len) {
     char *start = str, *end = str + len - 1;
 
     if(!(str && *str)) { return 0; }
 
-    for(; *start && isspace((int) *start); start++);
-    for(; end > start && isspace((int) *end); end--);
+    for(; *start && _mini_isspace((int) *start); start++);
+    for(; end > start && _mini_isspace((int) *end); end--);
 
     *(++end) = '\0';
     memmove(str, start, end - start + 1);
