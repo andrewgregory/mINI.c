@@ -1,16 +1,18 @@
 CFLAGS += -Wall -g -I..
 
-OBJECTS = 10-basic.t
+TESTS = 10-basic.t
 
-%.t: %.c
+%.t: %.c ../mini.c ../mini.h
 	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $< $(LDLIBS) -o $@
 
-all: $(OBJECTS)
-
 check: all
-	PATH=.:$$PATH prove $(OBJECTS)
+	PATH=.:$$PATH prove $(TESTS)
+
+tests: $(TESTS)
+
+all: tests
 
 clean:
-	$(RM) $(OBJECTS)
+	$(RM) $(TESTS)
 
-.PHONY: all clean check
+.PHONY: all clean check tests
