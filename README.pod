@@ -197,7 +197,7 @@ return value from the callback will be returned.
 
 =back
 
-=head1 BUGS
+=head1 RESTRICTIONS
 
 =over
 
