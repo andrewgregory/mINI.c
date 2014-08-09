@@ -59,13 +59,12 @@ void mini_free(mini_t *mini) {
     free(mini);
 }
 
-static size_t _mini_strtrim(char *str) {
-    char *start = str, *end;
+static size_t _mini_strtrim(char *str, size_t len) {
+    char *start = str, *end = str + len - 1;
 
     if(!(str && *str)) { return 0; }
 
     for(; *start && isspace((int) *start); start++);
-    end = start + strlen(start) - 1;
     for(; end > start && isspace((int) *end); end--);
 
     *(++end) = '\0';
@@ -121,9 +120,13 @@ mini_t *mini_next(mini_t *mini) {
 
     mini->lineno++;
 
-    if((c = strchr(mini->_buf, '#'))) { *c = '\0'; }
+    buflen = strlen(mini->_buf);
+    if((c = strchr(mini->_buf, '#'))) {
+        *c = '\0';
+        buflen = c - mini->_buf;
+    }
 
-    buflen = _mini_strtrim(mini->_buf);
+    buflen = _mini_strtrim(mini->_buf, buflen);
 
     if(buflen == 0) { return mini_next(mini); }
 
@@ -137,8 +140,8 @@ mini_t *mini_next(mini_t *mini) {
         if((c = strchr(mini->_buf, '='))) {
             *c = '\0';
             mini->value = c + 1;
-            _mini_strtrim(mini->key);
-            _mini_strtrim(mini->value);
+            _mini_strtrim(mini->key, c - mini->_buf);
+            _mini_strtrim(mini->value, buflen - (mini->value - mini->_buf));
         }
     }
 
