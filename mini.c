@@ -29,6 +29,7 @@
 #include <ctype.h> /* isspace */
 #include <stdlib.h>
 #include <stdio.h>
+#include <errno.h>
 
 #include "mini.h"
 
@@ -73,6 +74,39 @@ static size_t _mini_strtrim(char *str) {
     return end - start;
 }
 
+/* fgetc wrapper that retries on EINTR */
+static int _mini_fgetc(FILE *stream) {
+    int c, errno_orig = errno;
+    do { errno = 0; c = fgetc(stream); } while(c == EOF && errno == EINTR);
+    if(c != EOF || feof(stream) ) { errno = errno_orig; }
+    return c;
+}
+
+/* fgets replacement to handle signal interrupts */
+static char *_mini_fgets(char *buf, int size, FILE *stream) {
+    char *s = buf;
+    int c;
+
+    if(size == 1) {
+        *s = '\0';
+        return buf;
+    } else if(size < 1) {
+        return NULL;
+    }
+
+    do {
+        c = _mini_fgetc(stream);
+        if(c != EOF) { *(s++) = (char) c; }
+    } while(--size > 1 && c != EOF && c != '\n');
+
+    if(s == buf || ( c == EOF && !feof(stream) )) {
+        return NULL;
+    } else {
+        *s = '\0';
+        return buf;
+    }
+}
+
 mini_t *mini_next(mini_t *mini) {
     char *c = NULL;
     size_t buflen = 0;
@@ -80,7 +114,7 @@ mini_t *mini_next(mini_t *mini) {
     mini->key = NULL;
     mini->value = NULL;
 
-    if(fgets(mini->_buf, mini->_buf_size, mini->stream) == NULL) {
+    if(_mini_fgets(mini->_buf, mini->_buf_size, mini->stream) == NULL) {
         mini->eof = feof(mini->stream);
         return NULL;
     }
