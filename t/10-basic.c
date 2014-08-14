@@ -1,3 +1,4 @@
+#include <errno.h>
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -19,79 +20,46 @@ int main(int argc, char **argv)
         "key#this is a comment\n"
         " [] # empty section name\n"
         "emptysection\n";
-    FILE *stream = fmemopen(buf, sizeof(buf), "r");
-    mini_t *ini = mini_finit(stream);
+    FILE *stream;
+    mini_t *ini;
 
     tap_plan(58);
 
+    if((stream = fmemopen(buf, sizeof(buf), "r")) == NULL) {
+        tap_bail("error: could not open memory stream (%s)\n", strerror(errno));
+        return 1;
+    }
+    if((ini = mini_finit(stream)) == NULL) {
+        tap_bail("error: could not init mini parser (%s)\n", strerror(errno));
+        return 1;
+    }
+
+#define CHECKLN(ln, s, k, v) {                                         \
+        tap_ok(mini_next(ini) != NULL, "line %d next != NULL", ln);    \
+        tap_is_int(ini->lineno, ln, "line %d lineno", ln);             \
+        tap_is_str(ini->section, s, "line %d section", ln);            \
+        tap_is_str(ini->key, k, "line %d key", ln);                    \
+        tap_is_str(ini->value, v, "line %d value", ln);                \
+        tap_is_int(ini->eof, 0, "line %d eof", ln);                    \
+    }
+
     tap_ok(ini != NULL, "mini_init");
 
-    tap_ok(mini_next(ini) != NULL, NULL);
-    tap_is_int(ini->lineno, 2, NULL);
-    tap_is_str(ini->section, NULL, NULL);
-    tap_is_str(ini->key, "key outside section", NULL);
-    tap_is_str(ini->value, NULL, NULL);
-    tap_is_int(ini->eof, 0, NULL);
+    CHECKLN(2, NULL, "key outside section", NULL);
+    CHECKLN(3, " section with spaces ", NULL, NULL);
+    CHECKLN(4, " section with spaces ", "[key", NULL);
+    CHECKLN(5, " section with spaces ", "key", "value");
+    CHECKLN(6, " section with spaces ", "key with spaces", NULL);
+    CHECKLN(7, " section with spaces ", "key", "value");
+    CHECKLN(8, " section with spaces ", "key", NULL);
+    CHECKLN(9, "", NULL, NULL);
+    CHECKLN(10, "", "emptysection", NULL);
 
-    tap_ok(mini_next(ini) != NULL, NULL);
-    tap_is_int(ini->lineno, 3, NULL);
-    tap_is_str(ini->section, " section with spaces ", NULL);
-    tap_is_str(ini->key, NULL, NULL);
-    tap_is_str(ini->value, NULL, NULL);
-    tap_is_int(ini->eof, 0, NULL);
+    tap_ok(mini_next(ini) == NULL, "next(eof) == NULL");
+    tap_ok(feof(ini->stream), "feof(ini->stream == 1");
+    tap_ok(ini->eof, "ini->eof == 1");
 
-    tap_ok(mini_next(ini) != NULL, NULL);
-    tap_is_int(ini->lineno, 4, NULL);
-    tap_is_str(ini->section, " section with spaces ", NULL);
-    tap_is_str(ini->key, "[key", NULL);
-    tap_is_str(ini->value, NULL, NULL);
-    tap_is_int(ini->eof, 0, NULL);
-
-    tap_ok(mini_next(ini) != NULL, NULL);
-    tap_is_int(ini->lineno, 5, NULL);
-    tap_is_str(ini->section, " section with spaces ", NULL);
-    tap_is_str(ini->key, "key", NULL);
-    tap_is_str(ini->value, "value", NULL);
-    tap_is_int(ini->eof, 0, NULL);
-
-    tap_ok(mini_next(ini) != NULL, NULL);
-    tap_is_int(ini->lineno, 6, NULL);
-    tap_is_str(ini->section, " section with spaces ", NULL);
-    tap_is_str(ini->key, "key with spaces", NULL);
-    tap_is_str(ini->value, NULL, NULL);
-    tap_is_int(ini->eof, 0, NULL);
-
-    tap_ok(mini_next(ini) != NULL, NULL);
-    tap_is_int(ini->lineno, 7, NULL);
-    tap_is_str(ini->section, " section with spaces ", NULL);
-    tap_is_str(ini->key, "key", NULL);
-    tap_is_str(ini->value, "value", NULL);
-    tap_is_int(ini->eof, 0, NULL);
-
-    tap_ok(mini_next(ini) != NULL, NULL);
-    tap_is_int(ini->lineno, 8, NULL);
-    tap_is_str(ini->section, " section with spaces ", NULL);
-    tap_is_str(ini->key, "key", NULL);
-    tap_is_str(ini->value, NULL, NULL);
-    tap_is_int(ini->eof, 0, NULL);
-
-    tap_ok(mini_next(ini) != NULL, NULL);
-    tap_is_int(ini->lineno, 9, NULL);
-    tap_is_str(ini->section, "", NULL);
-    tap_is_str(ini->key, NULL, NULL);
-    tap_is_str(ini->value, NULL, NULL);
-    tap_is_int(ini->eof, 0, NULL);
-
-    tap_ok(mini_next(ini) != NULL, NULL);
-    tap_is_int(ini->lineno, 10, NULL);
-    tap_is_str(ini->section, "", NULL);
-    tap_is_str(ini->key, "emptysection", NULL);
-    tap_is_str(ini->value, NULL, NULL);
-    tap_is_int(ini->eof, 0, NULL);
-
-    tap_ok(mini_next(ini) == NULL, NULL);
-    tap_ok(feof(ini->stream), NULL);
-    tap_ok(ini->eof, NULL);
+#undef CHECKLN
 
     mini_free(ini);
 
