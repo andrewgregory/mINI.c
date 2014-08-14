@@ -25,10 +25,15 @@
 #ifndef MINI_H
 #define MINI_H
 
+#include <limits.h>
 #include <stdio.h>
 
 #if !defined(MINI_BUFFER_SIZE) || (MINI_BUFFER_SIZE < 2)
-#define MINI_BUFFER_SIZE 512
+#ifdef LINE_MAX
+#define MINI_BUFFER_SIZE LINE_MAX
+#else
+#define MINI_BUFFER_SIZE 2048
+#endif
 #endif
 
 typedef struct {
