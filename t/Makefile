@@ -1,6 +1,8 @@
 CFLAGS += -Wall -g -I..
 
-TESTS = 10-basic.t
+TESTS = 01-sanity.t 10-basic.t
+
+01-sanity.t: CFLAGS += -std=c99 -pedantic -Werror
 
 %.t: %.c ../mini.c ../mini.h
 	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $< $(LDLIBS) -o $@
