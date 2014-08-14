@@ -140,9 +140,9 @@ mini_t *mini_next(mini_t *mini) {
 
     if(mini->_buf[0] == '[' && mini->_buf[buflen - 1] == ']') {
         free(mini->section);
-        if(!(mini->section = strndup(mini->_buf + 1, buflen - 2))) {
-            return NULL;
-        }
+        mini->_buf[buflen - 1] = '\0';
+        if((mini->section = malloc(buflen - 1)) == NULL) { return NULL; }
+        memcpy(mini->section, mini->_buf + 1, buflen - 1);
     } else {
         mini->key = mini->_buf;
         if((c = strchr(mini->_buf, '='))) {
