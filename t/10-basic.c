@@ -15,6 +15,8 @@ int main(int argc, char **argv)
         " [ section with spaces ] \n"
         " [key \n"
         " key = value \n"
+        " \n"
+        " # comment-only line \n"
         " key with spaces \n"
         "key=value\n"
         "key#this is a comment\n"
@@ -49,11 +51,11 @@ int main(int argc, char **argv)
     CHECKLN(3, " section with spaces ", NULL, NULL);
     CHECKLN(4, " section with spaces ", "[key", NULL);
     CHECKLN(5, " section with spaces ", "key", "value");
-    CHECKLN(6, " section with spaces ", "key with spaces", NULL);
-    CHECKLN(7, " section with spaces ", "key", "value");
-    CHECKLN(8, " section with spaces ", "key", NULL);
-    CHECKLN(9, "", NULL, NULL);
-    CHECKLN(10, "", "emptysection", NULL);
+    CHECKLN(8, " section with spaces ", "key with spaces", NULL);
+    CHECKLN(9, " section with spaces ", "key", "value");
+    CHECKLN(10, " section with spaces ", "key", NULL);
+    CHECKLN(11, "", NULL, NULL);
+    CHECKLN(12, "", "emptysection", NULL);
 
     tap_ok(mini_next(ini) == NULL, "next(eof) == NULL");
     tap_ok(feof(ini->stream), "feof(ini->stream == 1");
