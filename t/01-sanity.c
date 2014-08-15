@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 #include "tap.c/tap.c"
 
 #include "mini.c"
