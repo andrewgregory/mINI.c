@@ -37,24 +37,30 @@ mini_t *mini_finit(FILE *stream) {
 
     if((mini = calloc(sizeof(mini_t), 1)) == NULL) { return NULL; }
 
-    mini->stream = stream;
-
     mini->_buf_size = MINI_BUFFER_SIZE;
     mini->_buf = malloc(mini->_buf_size);
     if(!mini->_buf) { mini_free(mini); return NULL; }
+
+    mini->stream = stream;
 
     return mini;
 }
 
 mini_t *mini_init(const char *path) {
     FILE *stream = fopen(path, "r");
-    return stream ? mini_finit(stream) : NULL;
+    if(!stream) {
+        mini_t *m = mini_finit(stream);
+        m->_free_stream = 1;
+        return m;
+    } else {
+        return NULL;
+    }
 }
 
 void mini_free(mini_t *mini) {
     free(mini->_buf);
     free(mini->section);
-    if(mini->stream) { fclose(mini->stream); }
+    if(mini->stream && mini->_free_stream) { fclose(mini->stream); }
     free(mini);
 }
 
@@ -201,9 +207,14 @@ int mini_fparse_cb(FILE *stream, mini_cb_t cb, void *data) {
 
 int mini_parse_cb(const char *path, mini_cb_t cb, void *data) {
     FILE *stream = fopen(path, "r");
-    return stream
-        ? mini_fparse_cb(stream, cb, data)
-        : cb(0, NULL, NULL, NULL, data);
+    int ret;
+    if(stream) {
+        ret = mini_fparse_cb(stream, cb, data);
+        fclose(stream);
+    } else {
+        ret = cb(0, NULL, NULL, NULL, data);
+    }
+    return ret;
 }
 
 #endif /* MINI_C */

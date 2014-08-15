@@ -44,6 +44,7 @@ typedef struct {
     /* private */
     char *_buf;
     size_t _buf_size;
+    int _free_stream;
 } mini_t;
 
 typedef int (*mini_cb_t)(int line, char *section,
