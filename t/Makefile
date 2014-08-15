@@ -7,8 +7,8 @@ TESTS = 01-sanity.t 10-basic.t
 %.t: %.c ../mini.c ../mini.h tap.c/tap.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $< $(LDLIBS) -o $@
 
-check: all
-	PATH=.:$$PATH prove $(TESTS)
+check: tests
+	prove .
 
 tests: $(TESTS)
 
