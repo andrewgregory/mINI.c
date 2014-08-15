@@ -1,3 +1,5 @@
+# the tap.c submodule must be checked out to build and run tests
+
 CFLAGS += -Wall -Wextra -g -I..
 
 TESTS = 01-sanity.t 10-basic.t
