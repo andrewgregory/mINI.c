@@ -3,9 +3,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include "mini.c"
-
 #include "tap.c/tap.c"
+
+#include "mini.c"
 
 int main(void)
 {
