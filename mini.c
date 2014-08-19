@@ -172,10 +172,7 @@ mini_t *mini_lookup_key(mini_t *mini, const char *section, const char *key) {
     if(!key) { return NULL; }
 
     while(mini_next(mini)) {
-        if(mini->lineno == 0) {
-            /* error occurred */
-            return NULL;
-        } else if(!mini->key) {
+        if(!mini->key) {
             /* starting a new section */
             in_section = (strcmp(mini->section, section) == 0);
         } else if(in_section && strcmp(mini->key, key) == 0) {
