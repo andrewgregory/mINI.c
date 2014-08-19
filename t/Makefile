@@ -12,11 +12,17 @@ TESTS = 01-sanity.t 10-basic.t 10-lookup.t
 check: tests
 	prove .
 
+gcov: CC = gcc
+gcov: CFLAGS += -fprofile-arcs -ftest-coverage
+gcov: check
+	gcov $(TESTS)
+
 tests: $(TESTS)
 
 all: tests
 
 clean:
 	$(RM) $(TESTS)
+	$(RM) *.gcov *.gcda *.gcno
 
-.PHONY: all clean check tests
+.PHONY: all clean check gcov tests
