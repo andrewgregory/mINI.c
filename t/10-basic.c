@@ -25,9 +25,9 @@ int main(void)
     FILE *stream;
     mini_t *ini;
 
-    tap_plan(58);
+    tap_plan(59);
 
-    if((stream = fmemopen(buf, sizeof(buf), "r")) == NULL) {
+    if((stream = fmemopen(buf, strlen(buf), "r")) == NULL) {
         tap_bail("error: could not open memory stream (%s)\n", strerror(errno));
         return 1;
     }
@@ -58,6 +58,7 @@ int main(void)
     CHECKLN(12, "", "emptysection", NULL);
 
     tap_ok(mini_next(ini) == NULL, "next(eof) == NULL");
+    tap_is_int(ini->lineno, 12, "final line count");
     tap_ok(feof(ini->stream), "feof(ini->stream == 1");
     tap_ok(ini->eof, "ini->eof == 1");
 
