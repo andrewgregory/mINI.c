@@ -166,6 +166,10 @@ mini_t *mini_lookup_key(mini_t *mini, const char *section, const char *key) {
     int in_section = (section == NULL);
 
     rewind(mini->stream);
+    free(mini->section);
+    mini->section = NULL;
+    mini->key = NULL;
+    mini->value = NULL;
     mini->lineno = 0;
     mini->eof = 0;
 
