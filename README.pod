@@ -236,4 +236,3 @@ Project URL: L<http://github.com/andrewgregory/mINI>
 Alternatives:
 L<http://it.bmc.uu.se/andlov/proj/utils/libinifile/index.php>,
 L<http://www.compuphase.com/minini.htm>
-
