@@ -234,5 +234,13 @@ SOFTWARE.
 Project URL: L<http://github.com/andrewgregory/mINI>
 
 Alternatives:
-L<http://it.bmc.uu.se/andlov/proj/utils/libinifile/index.php>,
-L<http://www.compuphase.com/minini.htm>
+
+=over
+
+=item L<http://it.bmc.uu.se/andlov/proj/utils/libinifile/index.php>
+
+=item L<http://www.compuphase.com/minini.htm>
+
+=item L<http://code.google.com/p/inih/>
+
+=back
