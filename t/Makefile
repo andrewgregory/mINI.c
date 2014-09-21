@@ -2,7 +2,7 @@
 
 CFLAGS += -Wall -Wextra -g -I..
 
-TESTS = 01-sanity.t 10-basic.t 10-lookup.t
+TESTS = 01-sanity.t 10-basic.t 10-lookup.t 90-smoke.t
 
 01-sanity.t: CFLAGS += -std=c99 -pedantic -Werror
 
