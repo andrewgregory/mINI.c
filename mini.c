@@ -65,7 +65,8 @@ void mini_free(mini_t *mini) {
 }
 
 static inline int _mini_isspace(int c) {
-    return strchr(" \t\f\r\n\v", c) ? 1 : 0;
+    return c == ' ' || c == '\n' || c == '\t'
+        || c == '\r' || c == '\f' || c == '\v';
 }
 
 static size_t _mini_strtrim(char *str, size_t len) {
