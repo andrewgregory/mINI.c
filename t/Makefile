@@ -17,12 +17,16 @@ gcov: CFLAGS += -fprofile-arcs -ftest-coverage
 gcov: check
 	gcov $(TESTS)
 
+gprof: CC = gcc
+gprof: CFLAGS += -pg
+gprof: check
+
 tests: $(TESTS)
 
 all: tests
 
 clean:
 	$(RM) $(TESTS)
-	$(RM) *.gcov *.gcda *.gcno
+	$(RM) *.gcov *.gcda *.gcno gmon.out
 
-.PHONY: all clean check gcov tests
+.PHONY: all clean check gcov gprof tests

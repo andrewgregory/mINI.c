@@ -2,3 +2,4 @@
 *.gcno
 *.gcov
 *.t
+gmon.out
