@@ -47,14 +47,12 @@ mini_t *mini_finit(FILE *stream) {
 }
 
 mini_t *mini_init(const char *path) {
-    FILE *stream = fopen(path, "r");
-    if(!stream) {
-        mini_t *m = mini_finit(stream);
-        m->_free_stream = 1;
-        return m;
-    } else {
-        return NULL;
-    }
+    FILE *stream;
+    mini_t *m;
+    if(!(stream = fopen(path, "r"))) { return NULL; }
+    if(!(m = mini_finit(stream))) { fclose(stream); return NULL; };
+    m->_free_stream = 1;
+    return m;
 }
 
 void mini_free(mini_t *mini) {
