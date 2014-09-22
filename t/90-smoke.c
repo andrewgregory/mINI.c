@@ -44,8 +44,9 @@ int main(void)
     tap_is_str(ini->value, "target value", "value");
     tap_is_int(ini->lineno, SECTIONS * 8 + 2, "lineno");
 
-    free(buf);
     mini_free(ini);
+    fclose(stream);
+    free(buf);
 
     return 0;
 }

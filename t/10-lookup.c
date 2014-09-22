@@ -60,6 +60,7 @@ int main(void)
 #undef CHECKLN
 
     mini_free(ini);
+    fclose(stream);
 
     return 0;
 }
