@@ -73,8 +73,8 @@ static size_t _mini_strtrim(char *str, size_t len) {
 
     if(!(str && *str)) { return 0; }
 
-    for(; *start && _mini_isspace((int) *start); start++);
-    for(; end > start && _mini_isspace((int) *end); end--);
+    while(*start && _mini_isspace((int) *start)) { start++; }
+    while(end > start && _mini_isspace((int) *end)) { end--; }
 
     *(++end) = '\0';
     memmove(str, start, end - start + 1);
