@@ -58,6 +58,7 @@ mini_t *mini_init(const char *path) {
 }
 
 void mini_free(mini_t *mini) {
+    if(mini == NULL) { return; }
     free(mini->_buf);
     free(mini->section);
     if(mini->stream && mini->_free_stream) { fclose(mini->stream); }
