@@ -47,7 +47,7 @@ typedef struct {
     int _free_stream;
 } mini_t;
 
-typedef int (*mini_cb_t)(int line, char *section,
+typedef int (*mini_cb_t)(unsigned int line, char *section,
 		char *key, char *value, void *data);
 
 mini_t *mini_finit(FILE *stream);

@@ -70,6 +70,7 @@ static inline int _mini_isspace(int c) {
 
 static size_t _mini_strtrim(char *str, size_t len) {
     char *start = str, *end = str + len - 1;
+    size_t newlen;
 
     if(!(str && *str)) { return 0; }
 
@@ -77,9 +78,10 @@ static size_t _mini_strtrim(char *str, size_t len) {
     while(end > start && _mini_isspace((int) *end)) { end--; }
 
     *(++end) = '\0';
-    memmove(str, start, end - start + 1);
+    newlen = (size_t)(end - start);
+    memmove(str, start, newlen + 1);
 
-    return end - start;
+    return newlen;
 }
 
 /* fgetc wrapper that retries on EINTR */
@@ -91,7 +93,7 @@ static int _mini_fgetc(FILE *stream) {
 }
 
 /* fgets replacement to handle signal interrupts */
-static char *_mini_fgets(char *buf, int size, FILE *stream) {
+static char *_mini_fgets(char *buf, size_t size, FILE *stream) {
     char *s = buf;
     int c;
 
@@ -137,7 +139,7 @@ mini_t *mini_next(mini_t *mini) {
 
     if((c = strchr(mini->_buf, '#'))) {
         *c = '\0';
-        buflen = c - mini->_buf;
+        buflen = (size_t)(c - mini->_buf);
     }
 
     buflen = _mini_strtrim(mini->_buf, buflen);
@@ -154,8 +156,8 @@ mini_t *mini_next(mini_t *mini) {
         if((c = strchr(mini->_buf, '='))) {
             *c = '\0';
             mini->value = c + 1;
-            _mini_strtrim(mini->key, c - mini->_buf);
-            _mini_strtrim(mini->value, buflen - (mini->value - mini->_buf));
+            _mini_strtrim(mini->key, (size_t)(c - mini->_buf));
+            _mini_strtrim(mini->value, buflen - (size_t)(mini->value - mini->_buf));
         }
     }
 
