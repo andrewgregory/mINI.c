@@ -1,6 +1,8 @@
 # the tap.c submodule must be checked out to build and run tests
 
-CFLAGS += -Wall -Wextra -g -I..
+CFLAGS += -Wall -Wextra -Wpedantic -g
+
+override CPPFLAGS += -I..
 
 TESTS = 01-sanity.t 10-basic.t 10-lookup.t 90-smoke.t
 
